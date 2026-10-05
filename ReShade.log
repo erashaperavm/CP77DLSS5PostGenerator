@@ -1,0 +1,166 @@
+11:26:09:891 [ 3136] | INFO  | Initializing crosire's ReShade version '6.8.0.2155' (64-bit) loaded from 'D:\testdlss5\host64\dxgi.dll' into 'D:\testdlss5\host64\dlss5-feed-host64.exe' (0xBD045BD0) ...
+11:26:09:892 [ 3136] | INFO  | Registering hooks for 'user32.dll' ...
+11:26:09:893 [ 3136] | INFO  | > Libraries loaded.
+11:26:09:896 [ 3136] | INFO  | > Found 21 match(es). Installing ...
+11:26:09:937 [ 3136] | INFO  | Registering hooks for 'C:\Windows\system32\dinput.dll' ...
+11:26:09:940 [ 3136] | INFO  | > Delayed.
+11:26:09:941 [ 3136] | INFO  | Registering hooks for 'C:\Windows\system32\dinput8.dll' ...
+11:26:09:942 [ 3136] | INFO  | > Delayed.
+11:26:09:942 [ 3136] | INFO  | Registering hooks for 'C:\Windows\system32\d2d1.dll' ...
+11:26:09:943 [ 3136] | INFO  | > Delayed.
+11:26:09:943 [ 3136] | INFO  | Registering hooks for 'C:\Windows\system32\d3d9.dll' ...
+11:26:09:943 [ 3136] | INFO  | > Delayed.
+11:26:09:943 [ 3136] | INFO  | Registering hooks for 'C:\Windows\system32\d3d10.dll' ...
+11:26:09:944 [ 3136] | INFO  | > Delayed.
+11:26:09:944 [ 3136] | INFO  | Registering hooks for 'C:\Windows\system32\d3d10_1.dll' ...
+11:26:09:945 [ 3136] | INFO  | > Delayed.
+11:26:09:945 [ 3136] | INFO  | Registering hooks for 'C:\Windows\system32\d3d11.dll' ...
+11:26:09:946 [ 3136] | INFO  | > Delayed.
+11:26:09:946 [ 3136] | INFO  | Registering hooks for 'C:\Windows\system32\d3d12.dll' ...
+11:26:09:947 [ 3136] | INFO  | > Delayed.
+11:26:09:947 [ 3136] | INFO  | Registering hooks for 'C:\Windows\system32\dxgi.dll' ...
+11:26:09:947 [ 3136] | INFO  | > Delayed until first call to an exported function.
+11:26:09:947 [ 3136] | INFO  | Registering hooks for 'openvr_api.dll' ...
+11:26:09:947 [ 3136] | INFO  | > Delayed.
+11:26:09:947 [ 3136] | INFO  | Initialized.
+11:26:09:947 [ 3136] | INFO  | Installing delayed hooks for 'C:\Windows\system32\d3d12.dll' (Just loaded via LoadLibrary('C:\Windows\SYSTEM32\d3d12.dll')) ...
+11:26:09:947 [ 3136] | INFO  | > Found 8 match(es). Installing ...
+11:26:09:974 [ 3136] | INFO  | Redirecting RegisterClassW(lpWndClass = 000000775F9BF070 { "dlss5feedhost", style = 0 }) ...
+11:26:10:001 [ 3136] | INFO  | Redirecting D3D12CreateDevice(pAdapter = 0000000000000000, MinimumFeatureLevel = b000, riid = {189819F1-1DB6-4B57-BE54-1821339B85F7}, ppDevice = 00007FF6C21CA920) ...
+11:26:10:002 [ 3136] | INFO  | Searching for add-ons (*.addon, *.addon64) in 'D:\testdlss5\host64' ...
+11:26:10:002 [ 3136] | INFO  | Loading add-on from 'D:\testdlss5\host64\renodx-dlss5.addon64' ...
+11:26:10:006 [ 3136] | INFO  | Registered add-on "DLSS 5 Neural Rendering" v0.2026.926.210 using ReShade API version 18.
+11:26:10:007 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: DX11Source=auto (default): in a process that presents through Direct3D 11 the game's own Direct3D 11 DLSS is served through the Direct3D 11 bridge, unless a DX11 bridge add-on of another project is loaded, which keeps the foreign route
+11:26:10:008 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: settings migration (pre-v4-migration): backup ReShade.ini.renodx-dlss5-pre-v4-migration-20261005-112610.bak
+11:26:10:008 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: config schema v0 migrated key-wise to v7 (inherited NRCodecMode/NRChainedHistory defaults adopted; the original ReShade.ini was backed up next to the addon)
+11:26:10:009 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: config schema v0 migrated key-wise to v7 (NRPQCalibration pinned at 2.5375; manual NRCodecMode selections preserved)
+11:26:10:009 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: DLSS5 active settings: intensity=1.000000 color_strength=1.000000 transfer=1.000000 paper_white=2.537500 preset=0 style=0 enabled=ON
+11:26:10:009 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: RenoDX DLSS5 Generic v8.5.0-rc10 (build Sep 26 2026 16:19:46) loaded (hotkeys: NR toggle F6, screenshot F5) | ListStateMode=1 DedupeMode=1 | EnableHooks=2: NGX hooks only, Streamline modules left unpatched
+11:26:10:010 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: For support, share this ReShade.log and a screenshot of the addon's overlay status text. If the game itself crashes, also share RenoDX-DLSS5-crash.log next to the game's exe: it names the module that faulted.
+11:26:10:013 [ 3136] | INFO  | Redirecting CreateDXGIFactory2(Flags = 0x80000000, riid = {1BC6EA02-EF36-464F-BF0C-21CA39E5168A}, ppFactory = 000000775F9BE9D8) ...
+11:26:10:013 [ 3136] | INFO  | Installing export hooks for 'C:\Windows\system32\dxgi.dll' ...
+11:26:10:014 [ 3136] | INFO  | > Found 5 match(es). Installing ...
+11:26:10:247 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NGX module scan (loaded copies):
+
+11:26:10:249 [ 3136] | INFO  | Installing delayed hooks for 'C:\Windows\system32\d3d11.dll' (Just loaded via LoadLibrary('C:\Windows\SYSTEM32\d3d11.dll')) ...
+11:26:10:249 [ 3136] | INFO  | > Found 3 match(es). Installing ...
+11:26:10:273 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: birth-time observation installed on the D3D12 device vtable: ID3D12Device::CreateCommandList verified detoured - lists created from here on carry a KNOWN compute-state baseline from their first instruction
+11:26:10:428 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR runtime declares file version 310.8.3.0, GPU architecture NVSDK_NGX_GPU_Arch_Blackwell2, minimum driver 615.00; NVIDIA driver 617.14; NVIDIA GPU device 0x2D19 (Blackwell or newer); declarations only - the runtime's start line says whether NR started
+11:26:10:428 [ 3136] | WARN  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR runtime sha256 F95FEB54137EA11979F9B4EC4F00AFD84B5C98A5624D3388FBF6A87714A39FCC (custom runtime accepted; not the reference build, so not known to be NVIDIA-signed; file version 310.8.3.0; NR failures may be specific to it)
+11:26:10:428 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: signed NR runtime (nvngx_dlssnr.dll) pre-loaded at device init
+11:26:10:428 [ 3136] | INFO  | Redirecting ID3D12Device::CreateCommandQueue(this = 000001F51A799FF0, pDesc = 000000775F9BF100, riid = {0EC870A6-5D7E-4C22-8CFC-5BAAE07616ED}, ppCommandQueue = 00007FF6C21CA930) ...
+11:26:10:428 [ 3136] | INFO  | > Dumping command queue description:
+11:26:10:428 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:10:428 [ 3136] | INFO  |   | Parameter                               | Value                                   |
+11:26:10:428 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:10:428 [ 3136] | INFO  |   | Type                                    | 0                                       |
+11:26:10:429 [ 3136] | INFO  |   | Priority                                | 0                                       |
+11:26:10:429 [ 3136] | INFO  |   | Flags                                   | 0                                       |
+11:26:10:429 [ 3136] | INFO  |   | NodeMask                                | 0                                       |
+11:26:10:429 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:10:464 [ 3136] | INFO  | Redirecting ID3D12Device::CreateCommandQueue(this = 000001F51A799FF0, pDesc = 000000775F9BF100, riid = {0EC870A6-5D7E-4C22-8CFC-5BAAE07616ED}, ppCommandQueue = 00007FF6C21CA928) ...
+11:26:10:465 [ 3136] | INFO  | > Dumping command queue description:
+11:26:10:465 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:10:465 [ 3136] | INFO  |   | Parameter                               | Value                                   |
+11:26:10:465 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:10:465 [ 3136] | INFO  |   | Type                                    | 0                                       |
+11:26:10:465 [ 3136] | INFO  |   | Priority                                | 0                                       |
+11:26:10:465 [ 3136] | INFO  |   | Flags                                   | 0                                       |
+11:26:10:465 [ 3136] | INFO  |   | NodeMask                                | 0                                       |
+11:26:10:465 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:10:486 [ 3136] | INFO  | Redirecting CreateDXGIFactory1(riid = {50C83A1C-E072-4C48-87B0-3630FA36A6D0}, ppFactory = 000000775F9BF068) ...
+11:26:10:486 [ 3136] | INFO  | Redirecting IDXGIFactory2::CreateSwapChainForHwnd(this = 000001F51A82ACD0, pDevice = 000001F51A355CD0, hWnd = 00000000001E0776, pDesc = 000000775F9BF0D0, pFullscreenDesc = 0000000000000000, pRestrictToOutput = 0000000000000000, ppSwapChain = ) ...
+11:26:10:486 [ 3136] | INFO  | > Dumping swap chain description:
+11:26:10:487 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:10:487 [ 3136] | INFO  |   | Parameter                               | Value                                   |
+11:26:10:487 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:10:487 [ 3136] | INFO  |   | Width                                   | 900                                     |
+11:26:10:487 [ 3136] | INFO  |   | Height                                  | 1028                                    |
+11:26:10:487 [ 3136] | INFO  |   | RefreshRate                             | 0                   0                   |
+11:26:10:487 [ 3136] | INFO  |   | Format                                  | DXGI_FORMAT_R8G8B8A8_UNORM              |
+11:26:10:487 [ 3136] | INFO  |   | Stereo                                  | FALSE                                   |
+11:26:10:487 [ 3136] | INFO  |   | ScanlineOrdering                        | 0                                       |
+11:26:10:487 [ 3136] | INFO  |   | Scaling                                 | 0                                       |
+11:26:10:487 [ 3136] | INFO  |   | SampleCount                             | 1                                       |
+11:26:10:487 [ 3136] | INFO  |   | SampleQuality                           | 0                                       |
+11:26:10:487 [ 3136] | INFO  |   | BufferUsage                             | 0x20                                    |
+11:26:10:487 [ 3136] | INFO  |   | BufferCount                             | 3                                       |
+11:26:10:487 [ 3136] | INFO  |   | Windowed                                | TRUE                                    |
+11:26:10:487 [ 3136] | INFO  |   | SwapEffect                              | 3                                       |
+11:26:10:488 [ 3136] | INFO  |   | AlphaMode                               | 0                                       |
+11:26:10:488 [ 3136] | INFO  |   | Flags                                   | 0x40                                    |
+11:26:10:488 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:10:494 [ 3136] | INFO  | Redirecting CreateDXGIFactory2(Flags = 0, riid = {1BC6EA02-EF36-464F-BF0C-21CA39E5168A}, ppFactory = 000000775F9BE910) ...
+11:26:10:494 [ 3136] | INFO  | Redirecting CreateDXGIFactory2(Flags = 0, riid = {1BC6EA02-EF36-464F-BF0C-21CA39E5168A}, ppFactory = 000000775F9BE910) ...
+11:26:10:495 [ 3136] | INFO  | Redirecting CreateDXGIFactory2(Flags = 0, riid = {1BC6EA02-EF36-464F-BF0C-21CA39E5168A}, ppFactory = 000000775F9BE910) ...
+11:26:10:495 [ 3136] | INFO  | Redirecting CreateDXGIFactory2(Flags = 0, riid = {1BC6EA02-EF36-464F-BF0C-21CA39E5168A}, ppFactory = 000000775F9BE910) ...
+11:26:10:496 [ 3136] | INFO  | Running on NVIDIA GeForce RTX 5060 Laptop GPU Driver 617.14.
+11:26:12:030 [ 3136] | INFO  | Recreated runtime environment on runtime 000001F51A701E60 ('D:\testdlss5\host64\ReShade.ini').
+11:26:12:031 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-VERDICT v3 state=NOT_ENGAGED stage=ngx_hooked reason=- missing=- seen=0 eligible=0 evals=0 ratio=0.0000 unaccounted=0 submitted=0 presents=1 build=v8.5.0-rc10 trigger=change api=d3d12 path=inline
+11:26:12:032 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-CARD v1 card=starting tone=idle trigger=change
+11:26:12:034 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: queue completion tracker installed on the D3D12 command queue (post-submit signal fences drive resource retirement)
+11:26:12:100 [ 3136] | INFO  | Redirecting CreateDXGIFactory1(riid = {770AAE78-F26F-4DBA-A829-253C83D1B387}, ppFactory = 000000775F9BEE78) ...
+11:26:12:104 [ 3136] | INFO  | Redirecting CreateDXGIFactory1(riid = {1BC6EA02-EF36-464F-BF0C-21CA39E5168A}, ppFactory = 000000775F9BF1A8) ...
+11:26:13:633 [ 3136] | INFO  | Redirecting CreateDXGIFactory1(riid = {7B7166EC-21C7-44AE-B21A-C9AE321AE369}, ppFactory = 000000775F9BE530) ...
+11:26:22:229 [ 3136] | DEBUG | [DLSS 5 Neural Rendering] DLSS5 Generic: NGX D3D12 module copy [0]: Export not present: NVSDK_NGX_D3D12_EvaluateFeature_C
+11:26:22:229 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: detoured NGX module copy [0] C:\Windows\System32\DriverStore\FileRepository\nvtfi.inf_amd64_dd61b3f54afe9928\_nvngx.dll (core)
+11:26:22:229 [ 3136] | DEBUG | [DLSS 5 Neural Rendering] DLSS5 Generic: NGX D3D12 module copy [1]: Export not present: NVSDK_NGX_D3D12_EvaluateFeature_C
+11:26:22:230 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: detoured NGX module copy [1] D:\testdlss5\host64\nvngx_dlss.dll
+11:26:22:230 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: D3D12 NGX hooks installed across 2 module copy(ies); inline DLSS contract capture armed
+11:26:22:246 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-VERDICT v3 state=NOT_ENGAGED stage=dlss_feature_seen reason=- missing=- seen=0 eligible=0 evals=0 ratio=0.0000 unaccounted=0 submitted=0 presents=62 build=v8.5.0-rc10 trigger=change api=d3d12 path=inline
+11:26:23:443 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NGX feature create intercepted: feature=1 (DLSS/DLAA), slot=0
+11:26:34:202 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NGX feature create returned: feature=1 (DLSS/DLAA), result=1 (success), handle=0x1f4c4534290
+11:26:34:203 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: separate helper presentation confirmed by Feeder ABI 1; Auto captures evaluated model buffers, not the helper window (NRScreenshotSource overrides)
+11:26:34:203 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NGX create contract: handle=0x1f4c4534290 feature=1 (DLSS/DLAA) source=create flags=0x4a [MVLowRes DepthInverted AutoExposure] render=640x360 out=640x360
+11:26:34:207 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-VERDICT v3 state=NOT_ENGAGED stage=evaluate_seen reason=- missing=- seen=0 eligible=0 evals=0 ratio=0.0000 unaccounted=0 submitted=0 presents=181 build=v8.5.0-rc10 trigger=change api=d3d12 path=inline
+11:26:34:209 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: first NGX evaluate intercepted (slot=0)
+11:26:34:209 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: compute-state shadow installed on the D3D12 command list vtable: 13 of 13 hooks verified detoured (Reset, ClearState, SetPipelineState, ExecuteBundle, SetDescriptorHeaps, SetComputeRootSignature, root descriptor tables, root constants plural, root CBV/SRV/UAV, ExecuteIndirect; no Release detour and no list-destruction
+11:26:34:209 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: compute-state shadow world: ReShade's proxy command list - the shadow records what the game hands its proxy, descriptor-heap proxies included
+11:26:34:210 [ 3136] | WARN  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR skipped (after-upscale): compute-state restore target incomplete (hooks=1 heaps=0 root_signature=0 root_arguments=0 pso=0); injecting would leave our bindings bound for the game. Retried every evaluate - the list's next observed Reset completes it
+11:26:34:211 [ 3136] | WARN  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-VERDICT v3 state=NOT_ENGAGED stage=nr_feature_ready reason=state_target missing=heaps seen=2 eligible=2 evals=0 ratio=0.0000 unaccounted=0 submitted=0 presents=182 build=v8.5.0-rc10 trigger=change api=d3d12 path=inline
+11:26:34:212 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: compute-state restore target complete (after-upscale: hooks=1 heaps=1 root_signature=1 root_arguments=1 pso=1); injection admitted after 2 incomplete-target decline(s)
+11:26:34:331 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: signed DLSSNR 310.8.0 D3D12 runtime initialized
+11:26:34:479 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: created legacy NR codec from build-validated shader bytecode
+11:26:34:739 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: created the NR look stage from build-validated shader bytecode
+11:26:34:742 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: created inline NR resources ws1 640x360 -> 640x360 (native 1:1) format=28 (workset 1/4, 7 MiB)
+11:26:34:742 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR look surfaces ws1: output
+11:26:34:742 [ 3136] | INFO  | Redirecting ID3D12Device::CreateCommandQueue(this = 000001F51A799FF0, pDesc = 000000775F9BE780, riid = {0EC870A6-5D7E-4C22-8CFC-5BAAE07616ED}, ppCommandQueue = 000000775F9BE710) ...
+11:26:34:742 [ 3136] | INFO  | > Dumping command queue description:
+11:26:34:742 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:34:743 [ 3136] | INFO  |   | Parameter                               | Value                                   |
+11:26:34:743 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:34:743 [ 3136] | INFO  |   | Type                                    | 0                                       |
+11:26:34:743 [ 3136] | INFO  |   | Priority                                | 0                                       |
+11:26:34:743 [ 3136] | INFO  |   | Flags                                   | 0                                       |
+11:26:34:743 [ 3136] | INFO  |   | NodeMask                                | 0                                       |
+11:26:34:743 [ 3136] | INFO  |   +-----------------------------------------+-----------------------------------------+
+11:26:34:776 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR feed: v1 (NRFeedMode=0; exposure texture=none fmt=0 auto_exposure=1 pre_exposure=1 exposure_scale=1 hdr=0 units=relative)
+11:26:34:776 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR guide contract: path=after flags=0x4a (IsHDR=0 MVLowRes=1 MVJittered=0 DepthInverted=1 AutoExposure=1) mvec=render base=0,0 window=640x360 of 640x360 scale=1,1 (game) depth_base=0,0 out=0,0 640x360 of 640x360 subrects=0 exposure=none
+11:26:34:776 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: frame contract path=inline in=640x360 out=640x360 hdr=0 flags=0x4a encoding=linear units=relative unit_nits=0 normalization=fixed divisor=1 transfer=ratio guard=0 governor=n/a slew=0 attack_release=0/0 snaps=0{prime:0,epoch:0,reset:0} ws=1 curve=0 exposure=ambiguous feed=v1 stack=1 pedestal=on
+11:26:34:776 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: feature 18 create starting: NR input 640x360 -> output 640x360, flags 0x4a, SDR
+11:26:34:776 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NGX feature create intercepted: feature=18 (DLSSNR/reserved-18), slot=0
+11:26:35:083 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: feature 18 created via the signed snippet after DLSS/DLAA for NR input 640x360 -> output 640x360, game DLSS created at 640x360
+11:26:35:092 [ 3136] | WARN  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-VERDICT v3 state=NOT_ENGAGED stage=injected reason=state_target missing=heaps seen=4 eligible=3 evals=0 ratio=0.0000 unaccounted=0 submitted=1 presents=183 build=v8.5.0-rc10 trigger=change api=d3d12 path=inline
+11:26:35:093 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR pass 1 model: style=0 local_tone=1 structure=1 skin=-1 auto_mask=0 ui_correction=0 skin_independent=1 sent_structure=1 sent_skin=-1
+11:26:35:094 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: Detail stability engaged: NR's edit is filtered over frames along the game's motion vectors (Auto)
+11:26:35:094 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR look stage shaped its first pass: ws1 pass 1 640x360 flags=0x8e
+11:26:35:095 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: inline feature 18 evaluation succeeded (count=1, NR input 640x360 (guides 640x360), output 640x360, 1 stack pass(es) [native])
+11:26:35:096 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-VERDICT v3 state=ENGAGED stage=- reason=state_target missing=heaps seen=6 eligible=4 evals=1 ratio=0.2500 unaccounted=0 submitted=2 presents=184 build=v8.5.0-rc10 trigger=change api=d3d12 path=inline
+11:26:35:096 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-CARD v1 card=active tone=good trigger=change
+11:26:35:096 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: UI language: zh-Hans (Auto, preferred zh-CN)
+11:26:35:096 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: status HUD drawn: toast card=active
+11:26:35:308 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: inline feature 18 evaluation succeeded (count=60, NR input 640x360 (guides 640x360), output 640x360, 1 stack pass(es) [native])
+11:26:35:773 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NGX create contract: handle=0x1f4c73d89f0 feature=1 (DLSS/DLAA) source=create flags=0x4a [MVLowRes DepthInverted AutoExposure] render=640x360 out=640x360
+11:26:35:775 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR workset ws1 released: proof=tracker (frees 7 MiB)
+11:26:35:780 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-CARD v1 card=waiting_for_dlss tone=idle trigger=change
+11:26:35:802 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: created inline NR resources ws2 640x360 -> 640x360 (native 1:1) format=28 (workset 1/4, 7 MiB)
+11:26:35:802 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR look surfaces ws2: output
+11:26:35:802 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR feed: v1 (NRFeedMode=0; exposure texture=none fmt=0 auto_exposure=1 pre_exposure=1 exposure_scale=1 hdr=0 units=relative)
+11:26:35:802 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR guide contract: path=after flags=0x4a (IsHDR=0 MVLowRes=1 MVJittered=0 DepthInverted=1 AutoExposure=1) mvec=render base=0,0 window=640x360 of 640x360 scale=1,1 (game) depth_base=0,0 out=0,0 640x360 of 640x360 subrects=0 exposure=none
+11:26:35:802 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: feature 18 create starting: NR input 640x360 -> output 640x360, flags 0x4a, SDR
+11:26:36:071 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: feature 18 created via the signed snippet after DLSS/DLAA for NR input 640x360 -> output 640x360, game DLSS created at 640x360
+11:26:36:072 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR-CARD v1 card=active tone=good trigger=change
+11:26:36:073 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: NR pass 1 model: style=0 local_tone=1 structure=1 skin=-1 auto_mask=0 ui_correction=0 skin_independent=1 sent_structure=1 sent_skin=-1
+11:26:36:485 [ 3136] | INFO  | Destroyed runtime environment on runtime 000001F51A701E60 ('D:\testdlss5\host64\ReShade.ini').
+11:26:36:521 [ 3136] | INFO  | [DLSS 5 Neural Rendering] DLSS5 Generic: the swapchain on the device NR was initialized on is being destroyed while recorded NR work has not completed or its list was never Reset (a game thread can still submit it, or execute it again); NR state is released once it is complete and closed, and an evaluate on the same device resumes NR instead
+11:26:36:524 [ 3136] | WARN  | Reference count for IDXGIFactory2 object 000001F51A82ACD0 (000001F51AA27510) is inconsistent (4).

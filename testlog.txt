@@ -1,0 +1,339 @@
+  Running Verify-DLSS5Feeder.ps1 on the result ...
+
+  ╔════════════════════════════════════════════════════════════════════╗
+  ║      ▄▄▄▄▄                                                         ║
+  ║    ▄▄█████   DLSS5-Feeder                                          ║
+  ║   ██████▀▀   Neural rendering bridge for ReShade                   ║
+  ║   ▀▀▀▀▀▀                                                           ║
+  ╚════════════════════════════════════════════════════════════════════╝
+
+  Folder  D:\testdlss5
+
+  ── Game executable and render API ────────────────────────────────
+  [ OK ] Executable: Cyberpunk2077.exe (x64, 64-bit, 57.2 MB)
+  [ -- ] Render API: Direct3D 10/11/12
+         Inferred from a local ReShade dxgi.dll.
+
+  ── ReShade ───────────────────────────────────────────────────────
+  [ OK ] Local ReShade (dxgi.dll): 6.8.0.2155 (add-on build)
+         D:\testdlss5\dxgi.dll
+  [ -- ] Vulkan implicit-layer checks skipped (this is a local-DLL install).
+  [ OK ] ReShade.ini present.
+
+  ── DLSS5-Feeder ──────────────────────────────────────────────────
+  [ OK ] dlss5-feed-helper.addon64: version 1.18.0-beta.1
+         x64 image
+  [ OK ] host64\dlss5-feed-host64.exe present.
+         linked 2026-09-29 04:17 UTC
+  [ OK ] Add-on and host64 helper are from the same build (link timestamps agree).
+  [ OK ] reshade-shaders\Shaders\DLSS5_Feed.fx present.
+  [ OK ] ReShade framework headers present (ReShade.fxh, ReShadeUI.fxh, DrawText.fxh).
+
+  ── Neural consumer ───────────────────────────────────────────────
+  [ OK ] renodx-dlss5.addon64 present (supported alternative).
+         in host64\. Deep Fried Chicken is the recommended default.
+  [ -- ] Alex's Toolkit not installed (optional; off the default path).
+
+  ── NVIDIA NGX runtimes ───────────────────────────────────────────
+  [ OK ] nvngx_dlssnr.dll: 310.8.3.0
+         in host64\
+         NVIDIA DLSSNR | NVIDIA DLSSNR - DVS PRODUCTION | DLSSNR
+         build: CL 38718415
+  [ OK ] nvngx_dlss.dll: 310.9.1.0
+         in host64\
+         NVIDIA Deep Learning SuperSampling | NVIDIA DLSS - DVS PRODUCTION | DLSS
+         build: CL 38868064
+
+  ── d3dcompiler_47.dll ────────────────────────────────────────────
+  [ OK ] No local d3dcompiler_47.dll -- System32's copy is used, which is correct.
+
+  ── Direct3D 12 runtime ───────────────────────────────────────────
+  [ OK ] No game-local D3D12\ (Agility SDK) folder; the system Direct3D 12 runtime is used.
+
+  ── GPU ───────────────────────────────────────────────────────────
+  [ OK ] NVIDIA RTX adapter found: NVIDIA GeForce RTX 5060 Laptop GPU
+  [ OK ] NVIDIA driver: 617.14
+         Minimum for neural rendering is 616.56.
+  [ -- ] Other adapters present: GameViewer Virtual Display Adapter; Intel(R) UHD Graphics; NVIDIA GeForce RTX 5060 Laptop GPU
+         On a hybrid machine, confirm the game actually renders on the RTX GPU -- the interop extensions do not exist on an iGPU.
+
+  ── Logs ──────────────────────────────────────────────────────────
+  [ -- ] No feeder log yet -- launch the game once and re-run this script for a runtime verdict.
+
+  ── Motion vectors ────────────────────────────────────────────────
+  [ OK ] DLSS5_MV_PROVIDER=3 -- LumeniteFX Kernel (Kernel::tFlow)
+         Read from the [DLSS5_Feed.fx] section of the preset.
+  [ OK ] DLSS5_Feed is enabled (position 2 of 2 in Techniques=).
+  [ OK ] lumenite_Kernel.fx is enabled and runs before DLSS5_Feed.
+
+  ────────────────────────────────────────────────────────────────────
+  18 OK   0 warnings   0 failures
+  Verdict: everything checks out.
+
+
+  Next, in the game:
+   1. Launch it. Press Home for the ReShade overlay and check there are no compile errors.
+   2. Both techniques should already be ticked, in this order: Lumenite_Kernel above DLSS 5 Feed.
+   3. Turn on neural rendering in the DLSS 5 Neural Rendering add-on panel.
+   4. Turn the game's MSAA/SSAA off.
+   5. ReShade's add-on list should show "DLSS 5 Feed (64-bit helper)". If the game renders but DLSS never starts, check host64\dlss5-feed-host.log.
+   6. Then check dlss5-feed.log next to the exe for "feature ready", "frame N delivered", and re-run Verify-DLSS5Feeder.ps1 for a runtime verdict.
+
+
+  Press Enter to exit:
+PS D:\testdlss5> cd host64
+PS D:\testdlss5\host64> .\dlss5-feed-host64.exe --test
+11:26:09.699  dlss5-feed-host64 commit a9d071c (built Sep 29 2026 06:17:28)
+11:26:09.705  [host] command line (argc=2): "D:\testdlss5\host64\dlss5-feed-host64.exe" --test
+11:26:09.705  [host] log file: D:\testdlss5\host64\dlss5-feed-host.log
+11:26:09.707  [host] DLSS 5 add-on file: renodx-dlss5.addon64
+11:26:09.717  [host] DLSS 5 add-on: v8.5.0-rc10 (file version 0.2026.926.210) -- v6+ (v4.7 lineage; neural pass measured working on driver 617.14) engine
+11:26:09.718  [host] EnableHooks was unset; wrote EnableHooks=2 into the host's ReShade.ini (NGX-only -- this host calls NGX directly, no Streamline)
+11:26:09.727  [host] NeuralUplift was unset; wrote NeuralUplift=1 into the host's ReShade.ini (neural rendering on)
+11:26:09.744  [host] NREnableUpscaling was unset; wrote NREnableUpscaling=0 into the host's ReShade.ini (upscaling off; this host publishes a complete 1:1 DLAA contract)
+11:26:09.767  [host] NRToggleKey was unset; wrote NRToggleKey=0 into the host's ReShade.ini (unbound; gameplay keys must not reach this background helper)
+11:26:09.788  [host] NRScreenshotKey was unset; wrote NRScreenshotKey=0 into the host's ReShade.ini (unbound; same reason)
+11:26:09.805  [host] Alex's Toolkit: not present -- DLSS 5 runs a single neural pass
+11:26:09.805  [host] Deep Fried Chicken: not present next to the host
+11:26:09.806  [host] OptiScaler: not present
+11:26:09.842  [host] window size: 900x1028 (from [DLSS5Host] WindowWidth/WindowHeight in ReShade.ini; WindowHeight=0 there means auto -- fill the work area)
+11:26:09.870  [host] ReShade.ini: wrote an overlay layout with the tab column 804 px wide
+11:26:09.974  [host] dxgi.dll: D:\testdlss5\host64\dxgi.dll
+11:26:10.001  [host] window: 900x1028 client (tall and narrow, fit to the work area height)
+11:26:12.031  [host] disguise up: hidden window + D3D12 swapchain (ReShade should be attached now)
+11:26:12.101  [host] device adapter: NVIDIA GeForce RTX 5060 Laptop GPU  LUID 00000000:1D92667D  PCI 10DE:2D19  driver 617.14 (DXGI's default adapter)
+11:26:12.102  [host] NGX application data path: D:\testdlss5\host64\ (writable)
+11:26:12.102  [host] NGX runtime nvngx_dlssnr.dll: 310.8.3.0, NVIDIA DLSSNR | NVIDIA DLSSNR - DVS PRODUCTION, build CL 38718415
+11:26:12.103  [host] NGX runtime nvngx_dlss.dll: 310.9.1.0, NVIDIA Deep Learning SuperSampling | NVIDIA DLSS - DVS PRODUCTION, build CL 38868064
+11:26:12.853  [host] NGX feature requirements: SuperSampling (DLSS, what this project creates) -> supported (min GPU architecture 0x160, min OS 10.0.0)
+11:26:12.858  [host] NGX feature requirements: feature 18 (neural rendering, what nvngx_dlssnr.dll backs) -> the query itself failed 0xBAD00012 (NotImplemented)
+[2026-10-05 11:26:12] [ngx::util::setLogFilename:216] Logging to requested file (D:\testdlss5\host64\/nvsdk_ngx.log) enabled successfully
+11:26:12.859  [host] ngx(32764): [2026-10-05 11:26:12] [ngx::util::setLogFilename:216] Logging to requested file (D:\testdlss5\host64\/nvsdk_ngx.log) enabled successfully
+[2026-10-05 11:26:12] [NGXSafeInitializeLog:148] App logging hooks successfully initialized
+11:26:12.859  [host] ngx(32764): [2026-10-05 11:26:12] [NGXSafeInitializeLog:148] App logging hooks successfully initialized
+[2026-10-05 11:26:12] [ngx::util::openLogFileInPath:246] Logging to requested file (D:\testdlss5\host64\/nvngx.log) enabled successfully
+11:26:12.877  [host] ngx(32765): [2026-10-05 11:26:12] [ngx::util::openLogFileInPath:246] Logging to requested file (D:\testdlss5\host64\/nvngx.log) enabled successfully
+[2026-10-05 11:26:12] [NGXSafeInitializeLog:139] App logging hooks successfully initialized
+11:26:12.877  [host] ngx(32765): [2026-10-05 11:26:12] [NGXSafeInitializeLog:139] App logging hooks successfully initialized
+[2026-10-05 11:26:12] [NGXGetPathUsingQAI:512] Path to driverStore found using QAI: C:\Windows\System32\DriverStore\FileRepository\nvtfi.inf_amd64_dd61b3f54afe9928
+11:26:12.878  [host] ngx(32765): [2026-10-05 11:26:12] [NGXGetPathUsingQAI:512] Path to driverStore found using QAI: C:\Windows\System32\DriverStore\FileRepository\nvtfi.inf_amd64_dd61b3f54afe9928
+[2026-10-05 11:26:12] [NGXGetPath:1046] using path for models: C:\ProgramData\NVIDIA\NGX\models
+11:26:12.878  [host] ngx(32765): [2026-10-05 11:26:12] [NGXGetPath:1046] using path for models: C:\ProgramData\NVIDIA\NGX\models
+[2026-10-05 11:26:12] [NGXGetPath:1046] using path for models: C:\ProgramData\NVIDIA\NGX\models
+11:26:12.878  [host] ngx(32765): [2026-10-05 11:26:12] [NGXGetPath:1046] using path for models: C:\ProgramData\NVIDIA\NGX\models
+[2026-10-05 11:26:12] [ModifyExistingFolderDACL:211] updated access control list for NGX cache (NGX cache should now be usable by all authenticated users)
+11:26:12.899  [host] ngx(32765): [2026-10-05 11:26:12] [ModifyExistingFolderDACL:211] updated access control list for NGX cache (NGX cache should now be usable by all authenticated users)
+[2026-10-05 11:26:12] [NGXCreateModelsFolder:1073] model folder created: C:\ProgramData\NVIDIA\NGX\models
+11:26:12.900  [host] ngx(32765): [2026-10-05 11:26:12] [NGXCreateModelsFolder:1073] model folder created: C:\ProgramData\NVIDIA\NGX\models
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [dlss]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658702=0.0.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658701=0.0.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9FEB50=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9FF4BC=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9FD524=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9DF510=1.3.106
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9CB0B8=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9E26B0=2.1.28
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9D48D0=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E99B5EC=1.2.109
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9DFA64=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9FD6C0=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9CF688=2.2.15
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9D6F08=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9BF564=2.1.201
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9DB4F4=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9D2F5C=1.2.110
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9D7388=1.0.108
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9F5618=2.1.29
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9DAE68=1.2.109
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9D8C54=1.2.109
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9D3EF0=2.1.28
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9FACDC=2.1.201
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_F7361DC=2.1.28
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9C3560=2.1.201
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9B0430=2.1.28
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658700=310.9.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9DB490=2.3.4
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [dlisp]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9CF688=2.1.15
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E99B5EC=1.2.102
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=310.0.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9D8C54=1.2.106
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9D2F5C=1.2.106
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9DF510=1.3.101
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_B9DAE68=1.2.106
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [dlss_override]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658700=310.9.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [dlssd]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658700=310.9.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [dlssg]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658700=310.9.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_sdk_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_common_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_deepdvc_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_dlss_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_dlss_d_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_dlss_g_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_nis_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_nvperf_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_pcl_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXLoadConfig:1145] [sl_reflex_0]
+[2026-10-05 11:26:12] [NGXLoadConfig:1151] app_E658703=2.14.0
+[2026-10-05 11:26:12] [NGXDRSInit:182] NvAPI_DRS_FindApplicationByName -166
+11:26:12.974  [host] ngx(32765): [2026-10-05 11:26:12] [NGXDRSInit:182] NvAPI_DRS_FindApplicationByName -166
+[2026-10-05 11:26:12] [NGXInitContext:245] called from module dlss5-feed-host64.exe at D:\testdlss5\host64
+11:26:12.981  [host] ngx(32765): [2026-10-05 11:26:12] [NGXInitContext:245] called from module dlss5-feed-host64.exe at D:\testdlss5\host64
+[2026-10-05 11:26:12] [NGXContextDenyListData::IsFeatureDenied:676] Feature dldenoiser, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:12] [NGXReportStatusFeedback:1103] Override shared memory was opened successfully
+11:26:12.982  [host] ngx(32765): [2026-10-05 11:26:12] [NGXReportStatusFeedback:1103] Override shared memory was opened successfully
+[2026-10-05 11:26:12] [NGXReportStatusFeedback:1115] Override shared memory was mapped successfully
+11:26:12.982  [host] ngx(32765): [2026-10-05 11:26:12] [NGXReportStatusFeedback:1115] Override shared memory was mapped successfully
+[2026-10-05 11:26:12] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlss, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXSecureLoadFeature:1384] Feature dlss failed to load (cmsid 258311939) from cache (location: C:\ProgramData\NVIDIA\NGX\models\dlss\versions\0\files, name: 160_F658703.bin)
+[2026-10-05 11:26:13] [NGXSecureLoadFeature:1384] Feature dlss failed to load (cmsid 241534723) from cache (location: C:\ProgramData\NVIDIA\NGX\models\dlss\versions\0\files, name: 160_E658703.bin)
+[2026-10-05 11:26:13] [NGXSecureLoadFeature:1499] app F658703 feature dlss snippet: D:\testdlss5\host64\/nvngx_dlss.dll version: 310.9.1
+11:26:13.189  [host] ngx(32765): [2026-10-05 11:26:13] [NGXSecureLoadFeature:1499] app F658703 feature dlss snippet: D:\testdlss5\host64\/nvngx_dlss.dll version: 310.9.1
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlinpainting, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlisr, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlslowmo, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlvsr, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlcolorize, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlstyletransfer, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlvdenoiser, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlisp, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlresolve, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlssg, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature deepdvc, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlssd, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature truehdr, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature latewarp, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature vsr, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature fgx, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXContextDenyListData::IsFeatureDenied:676] Feature dlssnr, denial value 0 for Cms ID f658703
+[2026-10-05 11:26:13] [NGXLoadAndValidateSnippet:1586] nvLoadSignedLibraryW() failed on snippet 'D:\testdlss5\host64\/nvngx_dlssnr.dll' missing or corrupted - last error 没有验证对象的数字签名。
+
+11:26:13.323  [host] ngx(32765): [2026-10-05 11:26:13] [NGXLoadAndValidateSnippet:1586] nvLoadSignedLibraryW() failed on snippet 'D:\testdlss5\host64\/nvngx_dlssnr.dll' missing or corrupted - last error 没有验证对象的数字签名。
+[2026-10-05 11:26:13] [NGXLoadMetaDataViaGetFileVersionInfo:1420] swscanf_s() failed on snippet 'D:\testdlss5\host64\/nvngx_dlssnr.dll' missing or corrupted
+11:26:13.323  [host] ngx(32765): [2026-10-05 11:26:13] [NGXLoadMetaDataViaGetFileVersionInfo:1420] swscanf_s() failed on snippet 'D:\testdlss5\host64\/nvngx_dlssnr.dll' missing or corrupted
+[2026-10-05 11:26:13] [`anonymous-namespace'::SnippetLocationInfo::load:720] Error: NGXLoadFromPath failed for D:\testdlss5\host64\: 0xBAD00000
+11:26:13.323  [host] ngx(32765): [2026-10-05 11:26:13] [`anonymous-namespace'::SnippetLocationInfo::load:720] Error: NGXLoadFromPath failed for D:\testdlss5\host64\: 0xBAD00000
+[2026-10-05 11:26:13] [NGXLoadAndValidateSnippet:1586] nvLoadSignedLibraryW() failed on snippet 'D:\testdlss5\host64/nvngx_dlssnr.dll' missing or corrupted - last error 没有验证对象的数字签名。
+
+11:26:13.457  [host] ngx(32765): [2026-10-05 11:26:13] [NGXLoadAndValidateSnippet:1586] nvLoadSignedLibraryW() failed on snippet 'D:\testdlss5\host64/nvngx_dlssnr.dll' missing or corrupted - last error 没有验证对象的数字签名。
+[2026-10-05 11:26:13] [NGXLoadMetaDataViaGetFileVersionInfo:1420] swscanf_s() failed on snippet 'D:\testdlss5\host64/nvngx_dlssnr.dll' missing or corrupted
+11:26:13.458  [host] ngx(32765): [2026-10-05 11:26:13] [NGXLoadMetaDataViaGetFileVersionInfo:1420] swscanf_s() failed on snippet 'D:\testdlss5\host64/nvngx_dlssnr.dll' missing or corrupted
+[2026-10-05 11:26:13] [`anonymous-namespace'::SnippetLocationInfo::load:720] Error: NGXLoadFromPath failed for D:\testdlss5\host64: 0xBAD00000
+11:26:13.458  [host] ngx(32765): [2026-10-05 11:26:13] [`anonymous-namespace'::SnippetLocationInfo::load:720] Error: NGXLoadFromPath failed for D:\testdlss5\host64: 0xBAD00000
+[2026-10-05 11:26:13] [tid:3136][util::setLogFilename:284] Logging to requested file (D:\testdlss5\host64\//nvngx_dlss_310_9_1.log) enabled successfully
+11:26:13.613  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][util::setLogFilename:284] Logging to requested file (D:\testdlss5\host64\//nvngx_dlss_310_9_1.log) enabled successfully
+[2026-10-05 11:26:13] [tid:3136][NGXInitLog:208] App logging hooks successfully initialized
+11:26:13.614  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXInitLog:208] App logging hooks successfully initialized
+[2026-10-05 11:26:13] [tid:3136][NGXInitLog:214] Build v310.9.1 CL 38868064
+11:26:13.614  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXInitLog:214] Build v310.9.1 CL 38868064
+[2026-10-05 11:26:13] [tid:3136][NGXInitLog:216] Built with APP_NAME = default
+11:26:13.615  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXInitLog:216] Built with APP_NAME = default
+[2026-10-05 11:26:13] [tid:3136][NGXInitLog:226] Loaded from path "D:\testdlss5\host64/nvngx_dlss.dll" by dlss5-feed-host64.exe
+11:26:13.615  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXInitLog:226] Loaded from path "D:\testdlss5\host64/nvngx_dlss.dll" by dlss5-feed-host64.exe
+[2026-10-05 11:26:13] [tid:3136][NGXCubinD3D12::Init:135] Enabling texmode_raw
+11:26:13.615  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXCubinD3D12::Init:135] Enabling texmode_raw
+[2026-10-05 11:26:13] [tid:3136][NGXCubinD3D12::Init:147] Enabling CuModule kernel path (load fatbin once, resolve entry points)
+11:26:13.631  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXCubinD3D12::Init:147] Enabling CuModule kernel path (load fatbin once, resolve entry points)
+[2026-10-05 11:26:13] [tid:3136][NGXCubinKernelMap::InitCubins:42] Loading NGXCubin kernels
+11:26:13.631  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXCubinKernelMap::InitCubins:42] Loading NGXCubin kernels
+[2026-10-05 11:26:13] [tid:3136][NGXCubinGeneric::SetGPUArch:413] SetGPUArch:: Gpu count = 1, luid: 0x1d92667d
+11:26:13.632  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXCubinGeneric::SetGPUArch:413] SetGPUArch:: Gpu count = 1, luid: 0x1d92667d
+[2026-10-05 11:26:13] [tid:3136][NGXCubinGeneric::SetGPUArch:473] m_gpuArch = 0x1b0
+11:26:13.633  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXCubinGeneric::SetGPUArch:473] m_gpuArch = 0x1b0
+[2026-10-05 11:26:13] [tid:3136][NGXCubinGeneric::genericPostInit:164] Fast UAV clear: supported
+11:26:13.635  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][NGXCubinGeneric::genericPostInit:164] Fast UAV clear: supported
+[2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLAA Cubins
+11:26:13.635  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLAA Cubins
+[2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLSS Debug Cubins
+11:26:13.636  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLSS Debug Cubins
+[2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLTSS Engine Cubins
+11:26:13.636  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLTSS Engine Cubins
+[2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLTSS NW Cubins
+11:26:13.636  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLTSS NW Cubins
+[2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLTSS NW E5M3_SKIP Cubins
+11:26:13.636  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLTSS NW E5M3_SKIP Cubins
+[2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLTSS NW Cubins
+11:26:13.637  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][DLSSCubinKernelMap::InitCubins:303] Setting DLTSS NW Cubins
+[2026-10-05 11:26:13] [tid:3136][DldnCubinKernelMap::InitCubins:138] Setting DLDN Engine Pre / Post Cubins
+11:26:13.637  [host] ngx(1): [2026-10-05 11:26:13] [tid:3136][DldnCubinKernelMap::InitCubins:138] Setting DLDN Engine Pre / Post Cubins
+11:26:22.225  [host] NVSDK_NGX_D3D12_Init -> 0x00000001 (Success)
+11:26:22.225  [host] NGX SuperSampling.FeatureInitResult: 0x00000001 (Success)
+11:26:22.225  [host] NGX capabilities: SuperSampling.Available=1 SuperSamplingDenoising.Available=0 NeedsUpdatedDriver=0 MinDriver=470.0
+11:26:22.226  [host] --test: 640x360 synthetic DLAA
+11:26:22.226  [host] DLSS Ultra Quality at 1920x1080: not offered (0x00000001, optimal 0x0)
+11:26:22.226  [host] DLSS Quality at 1920x1080: optimal 1280x720, render range 960x540 .. 1920x1080
+11:26:22.226  [host] --test: SR preset probe for 960x540 -> 1920x1080: Quality
+11:26:23.442  [host] GPU timing on (queue timestamp frequency 1000000000 Hz)
+[2026-10-05 11:26:23] [NVSDK_NGX_CreateFeature_Validate:729] app id is 258311939
+11:26:23.444  [host] ngx(32765): [2026-10-05 11:26:23] [NVSDK_NGX_CreateFeature_Validate:729] app id is 258311939
+[2026-10-05 11:26:23] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (DLAA) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:23] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (Quality) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:23] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (Balanced) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:23] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (Perf) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:23] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (UltraPerf) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:23] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (UltraQuality) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:23] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (DLAA) App hint Preset Unspecified or Overridden, using title default Preset K
+[2026-10-05 11:26:23] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (Quality) App hint Preset Unspecified or Overridden, using title default Preset K
+[2026-10-05 11:26:23] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (Balanced) App hint Preset Unspecified or Overridden, using title default Preset K
+[2026-10-05 11:26:23] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (Perf) App hint Preset Unspecified or Overridden, using title default Preset M
+[2026-10-05 11:26:23] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (UltraPerf) App hint Preset Unspecified or Overridden, using title default Preset L
+[2026-10-05 11:26:23] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (UltraQuality) App hint Preset Unspecified or Overridden, using title default Preset K
+[2026-10-05 11:26:23] [tid:3136][AliasTensorContainer:192] Texture is too small to fit tensor buffer: 1966080 < 6291456
+11:26:23.462  [host] ngx(1): [2026-10-05 11:26:23] [tid:3136][AliasTensorContainer:192] Texture is too small to fit tensor buffer: 1966080 < 6291456
+[2026-10-05 11:26:23] [tid:3136][AliasTensorContainer:192] Texture is too small to fit tensor buffer: 1966080 < 4214784
+11:26:23.462  [host] ngx(1): [2026-10-05 11:26:23] [tid:3136][AliasTensorContainer:192] Texture is too small to fit tensor buffer: 1966080 < 4214784
+[2026-10-05 11:26:23] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:399] Container0Tensor: 5 MiB allocated
+11:26:23.464  [host] ngx(1): [2026-10-05 11:26:23] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:399] Container0Tensor: 5 MiB allocated
+[2026-10-05 11:26:23] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:403] Container1Tensor: 6 MiB allocated
+11:26:23.464  [host] ngx(1): [2026-10-05 11:26:23] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:403] Container1Tensor: 6 MiB allocated
+[2026-10-05 11:26:23] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:407] Container2Tensor: 4 MiB allocated
+11:26:23.464  [host] ngx(1): [2026-10-05 11:26:23] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:407] Container2Tensor: 4 MiB allocated
+11:26:34.207  [host] feature ready: 640x360 DLAA flags=74
+[2026-10-05 11:26:34] [NVSDK_NGX_CreateFeature_Validate:729] app id is 258311939
+11:26:34.776  [host] ngx(32765): [2026-10-05 11:26:34] [NVSDK_NGX_CreateFeature_Validate:729] app id is 258311939
+11:26:35.715  [host] warm-up: re-creating the feature once
+[2026-10-05 11:26:35] [NVSDK_NGX_CreateFeature_Validate:729] app id is 258311939
+11:26:35.719  [host] ngx(32765): [2026-10-05 11:26:35] [NVSDK_NGX_CreateFeature_Validate:729] app id is 258311939
+[2026-10-05 11:26:35] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (DLAA) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:35] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (Quality) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:35] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (Balanced) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:35] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (Perf) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:35] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (UltraPerf) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:35] [tid:3136][NgxRayReconstruction::FillCreationParams::<lambda_5bd36971463f469fd81574f74f368df1>::operator ():1733] Info: (UltraQuality) Using Default Overriden Preset Preset_D
+[2026-10-05 11:26:35] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (DLAA) App hint Preset Unspecified or Overridden, using title default Preset K
+[2026-10-05 11:26:35] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (Quality) App hint Preset Unspecified or Overridden, using title default Preset K
+[2026-10-05 11:26:35] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (Balanced) App hint Preset Unspecified or Overridden, using title default Preset K
+[2026-10-05 11:26:35] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (Perf) App hint Preset Unspecified or Overridden, using title default Preset M
+[2026-10-05 11:26:35] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (UltraPerf) App hint Preset Unspecified or Overridden, using title default Preset L
+[2026-10-05 11:26:35] [tid:3136][NgxDltss::FillCreationParams::<lambda_cef418e50ae0bb979313c68b3f92b7fd>::operator ():2753] Info: (UltraQuality) App hint Preset Unspecified or Overridden, using title default Preset K
+[2026-10-05 11:26:35] [tid:3136][AliasTensorContainer:192] Texture is too small to fit tensor buffer: 1966080 < 6291456
+11:26:35.726  [host] ngx(1): [2026-10-05 11:26:35] [tid:3136][AliasTensorContainer:192] Texture is too small to fit tensor buffer: 1966080 < 6291456
+[2026-10-05 11:26:35] [tid:3136][AliasTensorContainer:192] Texture is too small to fit tensor buffer: 1966080 < 4214784
+11:26:35.727  [host] ngx(1): [2026-10-05 11:26:35] [tid:3136][AliasTensorContainer:192] Texture is too small to fit tensor buffer: 1966080 < 4214784
+[2026-10-05 11:26:35] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:399] Container0Tensor: 5 MiB allocated
+11:26:35.728  [host] ngx(1): [2026-10-05 11:26:35] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:399] Container0Tensor: 5 MiB allocated
+[2026-10-05 11:26:35] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:403] Container1Tensor: 6 MiB allocated
+11:26:35.729  [host] ngx(1): [2026-10-05 11:26:35] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:403] Container1Tensor: 6 MiB allocated
+[2026-10-05 11:26:35] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:407] Container2Tensor: 4 MiB allocated
+11:26:35.729  [host] ngx(1): [2026-10-05 11:26:35] [tid:3136][PaddedWindowNetwork::CreatePaddedWindowNetwork:407] Container2Tensor: 4 MiB allocated
+11:26:35.775  [host] feature ready: 640x360 DLAA flags=74
+[2026-10-05 11:26:35] [NVSDK_NGX_CreateFeature_Validate:729] app id is 258311939
+11:26:35.803  [host] ngx(32765): [2026-10-05 11:26:35] [NVSDK_NGX_CreateFeature_Validate:729] app id is 258311939
+11:26:36.479  [host] --test finished: 300/300 evaluates succeeded
+11:26:36.479  [host] --test: DLSS GPU 3.45 ms/frame over 299 timed frames at 640x360
+11:26:36.480  [host] check the host's ReShade.log for 'feature 18 created' / 'evaluation succeeded'
+11:26:36.530  [host] disguise released (ReShade saves its ini here)
+11:26:36.530  [host] exit 0
