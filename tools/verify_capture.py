@@ -266,11 +266,25 @@ def main():
             mf.get("is_hdr"), mf.get("feature")))
         cap = mf.get("captured_frames") or 0
         if cap and len(frames) != cap:
+            missing = cap - len(frames)
+            # 每帧大小：优先用 manifest 的 bytes_written/captured_frames，
+            # 没有则退化为首帧各通道文件之和（Compact 前后都能算对）
+            per_frame = None
+            bw = mf.get("bytes_written") or 0
+            if bw:
+                per_frame = bw / float(cap)
+            else:
+                f0dir = os.path.join(root, frames[0])
+                per_frame = sum(
+                    os.path.getsize(os.path.join(f0dir, n))
+                    for n in ("color.bin", "motion.bin", "depth.bin", "exposure.bin")
+                    if os.path.isfile(os.path.join(f0dir, n)))
             print()
             print("  [!] 帧数不符：manifest 说采了 %d 帧，这里只有 %d 帧，缺 %d 帧。" % (
-                cap, len(frames), cap - len(frames)))
-            print("      多半是拷贝没完成（不是采集失败）。按首帧 20.4 MB 算，缺约 %s。" % (
-                human((cap - len(frames)) * 20395760)))
+                cap, len(frames), missing))
+            print("      多半是拷贝没完成（不是采集失败）。%s" % (
+                "按每帧 %s 算，缺约 %s。" % (human(per_frame), human(missing * per_frame))
+                if per_frame else ""))
     else:
         print("  [!] 没有 manifest.json（只拷了 frame_* ？）")
 

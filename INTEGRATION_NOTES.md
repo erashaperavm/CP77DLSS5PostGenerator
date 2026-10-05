@@ -220,6 +220,7 @@ if (InParameters->Get(NVSDK_NGX_Parameter_MotionVectors, &paramVelocity) != NVSD
 
 > **落盘格式（捕获层 `[Capture] Compact`，默认 true）**：写盘时会压缩已知源格式以省空间——
 > color `R16G16B16A16_FLOAT` → `R11G11B10_FLOAT`，motion `R16G16B16A16_FLOAT` → `R16G16_FLOAT`（只留 RG，无损）。
+> 该契约由 `manifest.json` 的 **`capture_version=2`** 标识（=1 是压缩前的旧行为）。
 > 因此 `frame.json` 的 `color_format`/`motion_format` 是**落盘**格式，源格式另记在 `color_source_format`/`motion_source_format`。
 > 转换器**一律以 `color_format`/`motion_format` 为准**，不要假设 RGBA16F。关掉压缩用 `Compact=false`。
 

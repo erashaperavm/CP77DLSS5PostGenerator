@@ -202,12 +202,22 @@ tools\status.bat "D:\Steam\steamapps\common\Cyberpunk 2077"
 
 因此 mod 提供 **三种入口**：
 
-**A. 热键（推荐，最可靠）**
+**0. 屏幕 HUD + Page Up（默认，最省事）**
 
-mod 用 `registerHotkey` 注册了 4 个 id，去 **CET 覆盖层 → Bindings** 页绑定按键：
+mod 用 CET 的 ImGui 在**屏幕中轴线顶端（距顶 60 px）**常驻一个鲜绿色小方块，黑字显示：
+`状态（捕获中 / 捕获结束 / 待命）`、`已捕获秒数`、`帧数 · 体积`，触顶时显示原因。
+
+- **Page Up**：开始 / 结束采集（在 `onDraw` 里用 `ImGui.IsKeyPressed(ImGuiKey.PageUp)` 检测；
+  若你已在 Bindings 页把 `OptiCaptureToggle` 绑了键，则改由绑定回调触发，不会双触发）。
+- **单次录制上限**：**5 分钟或 50 GiB，先到先停**（mod 强制，自动发 STOP）。
+
+**A. 热键（Bindings 页绑定）**
+
+mod 用 `registerHotkey` 注册了 5 个 id，去 **CET 覆盖层 → Bindings** 页绑定按键：
 
 | id | 作用 |
 | --- | --- |
+| `OptiCaptureToggle` | 开始/结束（同 Page Up）。**若绑了它，内置 Page Up 检测会自动让位** |
 | `OptiCaptureStart` | 写 `command.txt=START`。OptiScaler 在**下一个 DLSS 求值帧**开始采集 |
 | `OptiCaptureStop` | 写 `command.txt=STOP`。当前帧采完后收尾并写 `manifest.json` |
 | `OptiCaptureStatus` | 查询一次：`state / frames / dropped / inflight / bytes / 分辨率 / 输出目录` |
@@ -441,8 +451,8 @@ python3 tools/verify_capture.py "D:\cap\session_20261005_213000"   # 路径在 W
           CET mod → plugins\cyber_engine_tweaks\mods\optiscaler_capture\init.lua）
 改 ini:  [Capture] Enabled=true, FrameStride=2, CaptureColor/Motion=true, Compact=true
          [Hotfix] ColorResourceBarrier=64, MotionVectorResourceBarrier=64
-游戏内:  热键 OptiCaptureStart → 走一段镜头 → OptiCaptureStop
-         （或手写 command.txt 写 START / STOP；CET 控制台无自定义命令）
+游戏内:  Page Up 开始/结束（屏幕顶端绿框显示 秒数/状态/体积；单次上限 5min 或 50GiB）
+         （或热键 OptiCaptureToggle；手写 command.txt 写 START / STOP；CET 控制台无自定义命令）
 输出:    bin\x64\plugins\cyber_engine_tweaks\mods\optiscaler_capture\session_[时间戳]\
 离线:    dlss5-feed-host64.exe --capture [session] --out [out] --fps 30
          （同 --test 环境：ReShade(dxgi.dll)+renodx-dlss5 add-on+OptiScaler）
