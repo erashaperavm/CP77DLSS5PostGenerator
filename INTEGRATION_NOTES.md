@@ -218,6 +218,11 @@ if (InParameters->Get(NVSDK_NGX_Parameter_MotionVectors, &paramVelocity) != NVSD
 | **Jitter** | `"Jitter.Offset.X/Y"` | float（像素单位） | ❌ 协议里没有字段 | 写进 `frame.json` 存档；仅用于分析 |
 | **Frame timing** | `"FrameTimeDeltaInMsec"` | float，**毫秒** | ❌ 协议里没有字段 | 写进 `frame.json`（注意转秒：`delta_time = ms / 1000.0`） |
 
+> **落盘格式（捕获层 `[Capture] Compact`，默认 true）**：写盘时会压缩已知源格式以省空间——
+> color `R16G16B16A16_FLOAT` → `R11G11B10_FLOAT`，motion `R16G16B16A16_FLOAT` → `R16G16_FLOAT`（只留 RG，无损）。
+> 因此 `frame.json` 的 `color_format`/`motion_format` 是**落盘**格式，源格式另记在 `color_source_format`/`motion_source_format`。
+> 转换器**一律以 `color_format`/`motion_format` 为准**，不要假设 RGBA16F。关掉压缩用 `Compact=false`。
+
 ### 3.1 ⚠️ 最重要的结论：ComfyUI worker 只吃 Color + Motion
 
 README 自己就承认了这一点（`README.md:31-35`）：

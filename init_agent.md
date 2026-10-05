@@ -224,29 +224,6 @@ Step 7: 写 ComfyUI 使用示例
 Step 8: 输出 README-CAPTURE.md，说明完整工作流
 ```
 
-第 2 步  Step 3 捕获层 + CET（不变，照原计划）
-         └─ 务必把 depth 采上（Tier 2 需要）
-
-第 3 步  Tier 1 打通（ComfyUI，Steps 6-8）
-         └─ 目的不是交付，是验证捕获数据正确：
-            color 能解、MV 方向/尺度对、无鬼影
-         迭代成本最低，出问题最便宜
-
-第 4 步  读 OptiScaler DLSS-NR 源码（0.5天）
-         └─ 确认 NR pass 到底消费哪些缓冲 → 决定第 5 步值不值得
-
-第 5 步  Route 1：fork DLSS5-Feeder 改离线
-         └─ 此时引擎数据已被第 3 步验证过，只剩契约层要写
-
-A. 捕获层编译 → 游戏机上采一小段（先决条件，阻塞后面所有事）
-B. 纯 CPU 捕获校验器（Python）→ Ubuntu 上验证 color/motion/depth 正确   ← 替代 ComfyUI 的验证路径
-C. DLSS5-Feeder 离线 host（读 B 确认过的数据）
-并行 D. 确认 nvngx_dlssnr.dll + RenoDX add-on 能否拿到
-
-另一个观察
-renodx-dlss5.addon64 v8.5.0-rc10 是 release candidate。host 的版本探测把它标成 "(v4.7 lineage; neural pass measured working on driver 617.14)"——host 自己断言这个组合在 617.14 上是好的。如果后面渲染出现异常，第一个怀疑对象就是它，可以回退到 README 表格里明确 ✅ 的 v8.0.1 或 v7.0.0-rc8。
-
-
 
 每一步完成后，AI agent 应该停下来，让你确认再继续。 不要一口气把三个交付物全写完再给你看。先确认仓库结构理解正确，再动代码。
 
