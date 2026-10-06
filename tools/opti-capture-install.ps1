@@ -52,8 +52,6 @@ param(
     [string]$Proxy = 'dxgi',
 
     [int]$FrameStride = 2,
-    [switch]$CaptureDepth,
-    [switch]$CaptureExposure,
     [switch]$NoIni,
     [switch]$Force
 )
@@ -343,12 +341,10 @@ function Invoke-Install {
         Set-IniValue $ini.Lines 'Capture' 'MaxFrames' '0'
         Set-IniValue $ini.Lines 'Capture' 'CaptureColor' 'true'
         Set-IniValue $ini.Lines 'Capture' 'CaptureMotion' 'true'
-        Set-IniValue $ini.Lines 'Capture' 'CaptureDepth' $(if ($CaptureDepth) { 'true' } else { 'false' })
-        Set-IniValue $ini.Lines 'Capture' 'CaptureExposure' $(if ($CaptureExposure) { 'true' } else { 'false' })
         Set-IniValue $ini.Lines 'Hotfix' 'ColorResourceBarrier' '64'
         Set-IniValue $ini.Lines 'Hotfix' 'MotionVectorResourceBarrier' '64'
         Write-IniFile $iniPath $ini.Lines $ini.HasBom
-        Write-Ok "OptiScaler.ini 已配置：[Capture] Enabled=true, FrameStride=$FrameStride；[Hotfix] barrier=64"
+        Write-Ok "OptiScaler.ini 已配置：[Capture] Enabled=true, FrameStride=$FrameStride, CaptureColor/Motion=true；[Hotfix] Color/Motion barrier=64"
     }
 
     # ---- 写 manifest ----

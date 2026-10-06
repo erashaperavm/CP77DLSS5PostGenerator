@@ -277,7 +277,7 @@ def main():
                 f0dir = os.path.join(root, frames[0])
                 per_frame = sum(
                     os.path.getsize(os.path.join(f0dir, n))
-                    for n in ("color.bin", "motion.bin", "depth.bin", "exposure.bin")
+                    for n in ("color.bin", "motion.bin")
                     if os.path.isfile(os.path.join(f0dir, n)))
             print()
             print("  [!] 帧数不符：manifest 说采了 %d 帧，这里只有 %d 帧，缺 %d 帧。" % (
@@ -293,7 +293,7 @@ def main():
     print("体积分解（第一帧实际文件大小）:")
     f0 = os.path.join(root, frames[0])
     sizes = {}
-    for name in ("color.bin", "motion.bin", "depth.bin", "exposure.bin"):
+    for name in ("color.bin", "motion.bin"):
         p = os.path.join(f0, name)
         if os.path.isfile(p):
             sizes[name] = os.path.getsize(p)
@@ -335,7 +335,18 @@ def main():
             ts = meta.get("color_tight_stride") or 0
             if ts and w:
                 print("   color  : %.1f B/px" % (ts / float(w)))
-            if cfmt == "DXGI_FORMAT_R11G11B10_FLOAT":
+            if cfmt == "R8G8B8_UNORM":
+                # capture_version=3：8-bit RGB（3 B/px），Reinhard+gamma 已在采集端烘焙
+                with open(cpath, "rb") as fh:
+                    raw = fh.read()
+                need = w * h * 3
+                if len(raw) < need:
+                    print("   [!] color.bin 只有 %d B，期望 %d" % (len(raw), need))
+                else:
+                    png = os.path.join(outdir, "%s_color.png" % frames[idx])
+                    save_rgb(raw[:need], w, h, png)
+                    print("   -> %s   (8-bit RGB，直接落图，无再变换)" % png)
+            elif cfmt == "DXGI_FORMAT_R11G11B10_FLOAT":
                 words = load_u32(cpath)
                 need = w * h
                 if len(words) < need:

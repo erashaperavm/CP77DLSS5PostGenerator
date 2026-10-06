@@ -1,4 +1,6 @@
-# USAGE — 修改版 OptiScaler 捕获 → 离线 DLSS 5 视频
+# USAGE — 技术文档：修改版 OptiScaler 捕获 → 离线 DLSS 5 视频
+
+> 只想要命令、不想看原理？看 **[QUICKSTART.md](../QUICKSTART.md)**（极简命令版）。
 
 本文件描述整条管线的**实际操作**。分三段：
 
@@ -67,12 +69,13 @@ Cyberpunk 2077\bin\x64\plugins\cyber_engine_tweaks\mods\optiscaler_capture\
 [Capture]
 Enabled=true          ; 默认 auto(=false)。不设 true，CET 的 START 会被忽略
 FrameStride=2         ; 每 2 帧采 1 帧。全采 60fps ≈ 2 GB/s，勿设 1
+                      ; stride>1 时 host 会自动把 MV 乘 stride 补偿时间轴（见 §2.4）
 MaxFrames=0           ; 0 = 不限
 CaptureColor=true
-CaptureMotion=true
-CaptureDepth=false    ; 离线 host 的 NR 求值默认不需要 depth（缺了 host 会喂常量平面）；想用 Tier 2 再开
-CaptureExposure=false ; 通常 1x1 或 null
-Compact=true          ; 写盘压缩：motion→RG16F、color(RGBA16F)→R11G11B10F，体积减半（见 §1.3）
+CaptureMotion=true    ; 这两个就是 DLSS 5 NR 模型消费的全部输入
+Compact=true          ; 写盘压缩：motion→RG16F(4 B/px)、color→8-bit RGB(3 B/px，tone map 已烘焙)（见 §1.3）
+CaptureAudio=true     ; WASAPI 环回录系统/游戏声 → session/audio.wav（见 §1.3）
+OutputDir=auto        ; 会话输出目录。auto = 写在 mod 目录（游戏盘）；写盘慢会丢帧，可指到更快的 SSD
 ```
 
 > `auto` 在这里等于 `false`。不改 `Enabled=true`，`OptiCaptureStart` 会被静默忽略，日志写 `START ignored: [Capture] Enabled is false`。
@@ -90,7 +93,7 @@ ExposureResourceBarrier=auto
 OutputResourceBarrier=auto
 ```
 
-**只改前两行**，其余保持 `auto`：
+**改前两行**（Color / Motion），其余保持 `auto`：
 
 ```ini
 ColorResourceBarrier=64          ; D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
@@ -100,6 +103,8 @@ ColorMaskResourceBarrier=auto
 ExposureResourceBarrier=auto
 OutputResourceBarrier=auto
 ```
+
+> 值不一定都是 64——若日志写 `channel 'color' unavailable: missing [Hotfix] barrier config` 说明没生效；若画面异常可依次试 `192`（PIXEL|NON_PIXEL）、`8`（UNORDERED_ACCESS）。
 
 - 值取 `D3D12_RESOURCE_STATES` 整数（`COMMON=0`、`RENDER_TARGET=4`、`UNORDERED_ACCESS=8`、`DEPTH_WRITE=16`、`NON_PIXEL_SHADER_RESOURCE=64`、`PIXEL_SHADER_RESOURCE=128`）。
 - **为什么必须填**：CP2077 的 quirk 只有 `CyberpunkHudlessState / FSRFGHudlessMismatchFixup / DisableHudfix / DisableDxgiSpoofing`，**没有** `DontUseUnrealColorBarriers`（那是 UE 专用，见 `dllmain.cpp:1451-1458`）。所以 OptiScaler 不会自动填这两个值；捕获层逻辑是"读不到 barrier 配置 → 跳过该通道"。留 `auto` = 一个字节都采不到。
@@ -151,7 +156,7 @@ tools\install.bat "D:\testdlss5\OptiScaler-Capture-Release" "D:\testdlss5\CET-op
 脚本做的事：
 1. 把 OptiScaler 运行时复制进 `bin\x64\`，`OptiScaler.dll` 按代理名改名（默认 `dxgi.dll`，镜像官方 `setup_windows.bat` 布局）；
 2. CET mod 复制进 `plugins\cyber_engine_tweaks\mods\optiscaler_capture\`；
-3. 改 `OptiScaler.ini`：`[Capture] Enabled=true, FrameStride=2, …` + `[Hotfix]` 两个 barrier `=64`（**段内定位**，不会误改其它段的同名键）；
+3. 改 `OptiScaler.ini`：`[Capture] Enabled=true, FrameStride=2, CaptureColor/Motion=true, …` + `[Hotfix]` 两个 barrier（Color/Motion）`=64`（**段内定位**，不会误改其它段的同名键）；
 4. 把所有「新增 / 被覆盖」的文件记进 `bin\x64\.opti-capture-install\manifest.json`，被覆盖的原文件备份到同目录 `backup\`。
 
 **撤回**：
@@ -176,8 +181,6 @@ tools\status.bat "D:\Steam\steamapps\common\Cyberpunk 2077"
 | --- | --- | --- |
 | `-Proxy <name>` | `dxgi` | 代理名：`dxgi`/`winmm`/`version`/`dbghelp`/`d3d12`/`wininet`/`winhttp`/`OptiScaler.asi` |
 | `-FrameStride <n>` | `2` | 每 n 帧采 1 帧 |
-| `-CaptureDepth` | 关 | 打开 depth 采集（Tier 2 才需要） |
-| `-CaptureExposure` | 关 | 打开 exposure 采集 |
 | `-NoIni` | 关 | 只铺文件，不改 ini |
 | `-Force` | 关 | 覆盖已有安装记录 / 顶掉占用的代理 dll |
 
@@ -211,7 +214,7 @@ mod 用 CET 的 ImGui 在**屏幕中轴线顶端（距顶 60 px）**常驻一个
 
 - **Page Up**：开始 / 结束采集（在 `onDraw` 里用 `ImGui.IsKeyPressed(ImGuiKey.PageUp)` 检测；
   若你已在 Bindings 页把 `OptiCaptureToggle` 绑了键，则改由绑定回调触发，不会双触发）。
-- **单次录制上限**：**5 分钟或 50 GiB，先到先停**（mod 强制，自动发 STOP）。
+- **单次录制上限**：**100 GiB**（mod 强制，自动发 STOP）；**时间不限**（`MAX_SECONDS=0`，两个上限任一为 0 即该项不限制）。
 
 **A. 热键（Bindings 页绑定）**
 
@@ -268,13 +271,12 @@ OptiScaler 侧只是**轮询 `command.txt`**。直接在
 
 ```
 session_<时间戳>\
-    ├── manifest.json                 # 会话级：分辨率、feature、stride、帧数、字节数
+    ├── manifest.json                 # 会话级：分辨率、feature、stride、帧数、字节数、音频信息
+    ├── audio.wav                     # 若 CaptureAudio=true：WASAPI 环回录的系统/游戏声
     ├── frame_000000\
     │   ├── frame.json                # 该帧全部元数据（见下表）
-    │   ├── color.bin                 # 紧凑（去 rowPitch padding）逐行数据
-    │   ├── motion.bin
-    │   ├── depth.bin                 # 若 CaptureDepth=true
-    │   └── exposure.bin              # 若 CaptureExposure=true 且资源非 null
+    │   ├── color.bin                 # 8-bit RGB（3 B/px），tight 逐行，Reinhard+gamma 已在采集端烘焙
+    │   └── motion.bin                # RG16F（4 B/px）；只有这两个通道（depth/exposure 已移除）
     └── frame_000001\ ...
 ```
 
@@ -282,7 +284,7 @@ session_<时间戳>\
 
 | 字段 | 用途 |
 | --- | --- |
-| `color_format` / `color_format_value` | **落盘**格式（枚举名 + 数值）。**必须按它分支解码**：`Compact=true` 时 color 落盘为 `R11G11B10_FLOAT`（4 B/px），`Compact=false` 时保留源格式 `R16G16B16A16_FLOAT`（8 B/px） |
+| `color_format` / `color_format_value` | **落盘**格式（名字 + 数值）。**必须按它分支解码**：`Compact=true`（capture_version=3）时 color 落盘为 `R8G8B8_UNORM`（3 B/px，Reinhard+gamma 已在采集端烘焙；24-bit RGB 无 DXGI 枚举，`format_value` 记 `-1`）；`Compact=false` 时保留源格式 `R16G16B16A16_FLOAT`（8 B/px） |
 | `color_source_format`（motion 同理 `motion_source_format`） | 源纹理格式，仅记录供溯源。motion 落盘在 Compact 时为 `R16G16_FLOAT`（4 B/px） |
 | `color_row_pitch` / `color_tight_stride` / `color_rows` | 行对齐信息（文件内是 tight，无 padding） |
 | `render_width` / `render_height` | DLSS 渲染分辨率 = color/motion 的尺寸 |
@@ -300,10 +302,11 @@ session_<时间戳>\
 | `frame_time_ms` / `delta_time` | 帧时间（毫秒 / 秒） |
 
 > **体积（本会话实测，源都是 `R16G16B16A16_FLOAT` = 8 B/px）**：
-> - **`Compact=true`（默认）**：color `R11G11B10_FLOAT`(4) + motion `R16G16_FLOAT`(4) = **8 B/px** → `1505×847×8 ≈ 9.7 MiB/帧`
+> - **`Compact=true`（默认，capture_version=3）**：color `R8G8B8_UNORM`(3) + motion `R16G16_FLOAT`(4) = **7 B/px** → `1505×847×7 ≈ 8.5 MiB/帧`
 > - `Compact=false`（旧行为）：color + motion 都 8 B/px = **16 B/px** → `≈ 19.45 MiB/帧`
-> stride=2、60fps 下前者约 `292 MiB/s ≈ 17 GiB/分钟`；838 帧对应 `manifest.json` 的 `bytes_written`。
-> 无损性：motion 只丢未用的 B/A；color 用 R11G11B10 保留 HDR 范围，相对误差 R/G<0.8%、B<1.6%（离线还要 tone map 到 8-bit，无感）。
+> stride=2、60fps 下前者约 `255 MiB/s ≈ 15 GiB/分钟`；帧数对应 `manifest.json` 的 `bytes_written`。
+> 无损性：motion 只丢未用的 B/A；color 在采集端就做完 Reinhard+gamma —— 这正是 host 原本要对
+> RGBA16F 做的事，所以喂给模型的值与旧契约**逐位一致**。省掉的是"存了 10-bit HDR、host 却量化到 8-bit"那段白费。
 
 ### 1.4 建议采样流程
 
@@ -329,17 +332,19 @@ session_<时间戳>\
 ```bat
 :: 离线机用与 --test 同一目录布局：旁边必须有 ReShade(dxgi.dll) + renodx-dlss5 add-on + OptiScaler（feature 18 的神经消费者）
 :: 即 --test 能跑出 300/300 的那套环境
-dlss5-feed-host64.exe --capture "D:\cap\session_20261005_213000" --out "D:\out\dlss5" --fps 30
+:: 帧率不用指定：host 会按每帧时间戳自动写出 frames.txt（见 §2.5）
+dlss5-feed-host64.exe --capture "D:\cap\session_20261005_213000" --out "D:\out\dlss5"
 ```
 
 | 参数 | 含义 |
 | --- | --- |
 | `--capture <dir>` | 捕获会话目录（含 `manifest.json`） |
-| `--out <dir>` | 输出目录，写 `frame_%06d.bmp` 序列 + `result.json`（24-bit BMP：双击可看、ffmpeg 可读；host 内**无 PNG/EXR 编码器**，故用 BMP） |
-| `--fps <n>` | 仅写进 `result.json` 供 ffmpeg 用；不影响渲染 |
+| `--out <dir>` | 输出目录：`frame_%06d.png` 序列 + **`frames.txt`**（每帧真实时长的 concat 列表，见 §2.5）+ `result.json`（含实测 `duration_sec` / `capture_fps`）+（若捕获层录了）`audio.wav`。PNG 是 24-bit（WIC 编码，无损；体积约为旧 BMP 的 1/2，视内容 1.5~3× 不等）：双击可看、ffmpeg 可读 |
+| `--fps <n>` | **已过时**：只写进 `result.json` 与"恒定帧率回退命令"的提示。自适应时间轴由 `frames.txt` 决定，与此无关 |
 | `--max-frames <n>` | 最多跑前 n 帧后停（默认跑到首个缺失帧为止） |
 | `--flip-motion` | 可选。方向实测不符时取反（见 §2.4） |
 | `--no-tone-map` | 可选。跳过 tone map（debug 用；HDR 源不 map 会高光炸白） |
+| `--no-mv-stride` | 可选。**关闭** MV 的 stride 时间补偿（默认自动补偿，见 §2.4；只用于 A/B 对比） |
 
 host 启动时无窗口（headless，同 `--test`），frame 逐帧读盘 → 上传 GPU（`CopyTextureRegion`）→ NGX 求值 → 回读 → 写 BMP。帧目录断在哪就停在哪（拷了 60 帧就跑 60 帧）。
 
@@ -348,18 +353,19 @@ host 启动时无窗口（headless，同 `--test`），frame 逐帧读盘 → �
 ```
 for each frame_NNNNNN/:
     read frame.json
-    1. color:  按 frame.json 的 color_format 解码（R11G11B10_FLOAT 或 R16G16B16A16_FLOAT）
-               → Reinhard tone map（除非 --no-tone-map）→ RGBA8 纹理
+    1. color:  按 frame.json 的 color_format 解码
+               （R8G8B8_UNORM：tone map 已在采集端烘焙，直接补 alpha 成 RGBA8；
+                 R11G11B10_FLOAT / R16G16B16A16_FLOAT：旧会话，仍走 Reinhard tone map，除非 --no-tone-map）
+               → RGBA8 纹理
     2. motion: 按 motion_format 解码（R16G16_FLOAT 直接是 RG；R16G16B16A16_FLOAT 取 RG 两通道）
                → 写 R16G16_FLOAT 纹理
                （mv ×= motion_scale 由 Evaluate 的 InMVScale 完成，host 原样传 frame.json 的 scale）
-    3. depth:  会话未采集(CaptureDepth=false)时，host 喂一张常量平面（日志会说明）
-               —— 若输出明显异常，重采时开 CaptureDepth=true
+    3. depth:  捕获层已不再采 depth，host 喂一张常量平面（日志会写明）
     4. flags = 由 frame.json 推导（见 §2.3）
     5. CreateFeature(render_w, render_h, flags, &rf, target_w, target_h)  // 上采样到 target
        Evaluate(color, output, depth, mv, render_w, render_h,
                 reset = (index==0), mvsx, mvsy, jitter_x, jitter_y, settle=0, hold=0)
-    6. 读回 output（target 分辨率）→ 写 frame_%06d.bmp
+    6. 读回 output（target 分辨率）→ 写 frame_%06d.png
 ```
 
 ### 2.3 NGX 契约（来自你机器上 `ReShade.log` 的实测，不是猜的）
@@ -382,17 +388,53 @@ if auto_exposure:   flags |= AutoExposure
 # is_hdr 不进 flags：HDR 由 color 侧 tone map 处理，NGX 拿到的已是 SDR
 ```
 
-### 2.4 两个必须实测校正的量（只能在游戏机上定）
+### 2.4 运动矢量的两个量：现在都能自动判定 / 补偿
 
-1. **motion 方向**：`frame.json` 写死 `current_to_previous`（与 NGX 约定一致，理论上无需取反）。若输出出现**拖影/反向抖动**，加 `--flip-motion` 重跑对比。
-2. **motion 尺度**：`motion_scale_x/y` 由捕获层从 `MV.Scale.X/Y` 读取，本会话实测 = 渲染分辨率（**非 1.0**）。若输出时间不稳定，检查 `low_res_mv` 与 scale 是否被正确应用（`mv_pixels = raw × scale`）。
+**1. 时间尺度（stride）—— 自动补偿**
+
+捕获每 `stride` 帧采 1 帧，但每个 MV 只描述 **1 个游戏帧**的位移；而模型是在**被喂入的帧之间**做时间重投影。不补偿就会"短 stride 倍"→ 时间历史对不齐 → 拖影。
+
+host 会读 `manifest.json` 的 `frame_stride`，把 `InMVScaleX/Y` **乘上 stride**：
+
+```
+[host] --capture: frame_stride=2 -> motion scale x2 (each MV covers one game frame, the model
+        is fed every 2-th) so temporal reprojection lines up; disable with --no-mv-stride
+```
+
+`stride=1` 时不变。想 A/B 对比可加 `--no-mv-stride`。
+
+**2. 方向 —— 自动探测**
+
+host 把"上一帧画面"分别按 `+MV` 与 `-MV` 平移，与当前帧比对（MAD），结束时给结论：
+
+```
+motion-direction probe (N pair(s)): prev(x+MV) MAD=.. vs prev(x-MV) MAD=.. -> ...
+```
+
+| 结论 | 含义 |
+| --- | --- |
+| `the as-captured sign aligns better; --flip-motion is NOT needed` | 方向本来就对，**不要**加 `--flip-motion` |
+| `the FLIPPED sign aligns better; add --flip-motion if the output ghosts` | 方向反了 → 加 `--flip-motion` 重跑 |
+| `no usable global motion ... cannot tell` | 镜头几乎没动，探测无效 → 只能肉眼看输出决定 |
 
 ### 2.5 合成视频
 
+host 会在输出目录写一个 **`frames.txt`**（concat 列表），里面是**每帧的真实显示时长**——由 `frame.json` 的 `frame_time_ms` × `engine_frame_count` 序号差算出，因此 **stride 和丢帧都被算进去，帧率动态变化导致的变速会自动消除**。优先用它：
+
 ```bash
-# 渲染机（Ubuntu 或 Windows 均可，ffmpeg 即可）
-ffmpeg -framerate 30 -i frame_%06d.bmp -c:v libx264 -crf 16 -pix_fmt yuv420p dlss5_out.mp4
+# 精确时间轴（推荐；host 已写好 frames.txt 与 audio.wav）
+ffmpeg -f concat -safe 0 -i frames.txt -i audio.wav \
+  -c:v libx264 -crf 16 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest dlss5_out.mp4
+# 无音频：去掉 -i audio.wav 与 -c:a aac -b:a 192k -shortest
 ```
+
+退回恒定帧率（仅当捕获帧率基本不变时才不失真；用 `result.json` 里的 `capture_fps` 作为 `-framerate`）：
+
+```bash
+ffmpeg -framerate 10 -i frame_%06d.png -c:v libx264 -crf 16 -pix_fmt yuv420p dlss5_out.mp4
+```
+
+> ⚠️ 游戏帧率是**动态的**（还叠加丢帧），单一 `-framerate` 只是取平均，快/慢段会变速。**优先 `frames.txt`**。`result.json` 现在也记了实测 `duration_sec` 与 `capture_fps`，可直接核对。
 
 ---
 
@@ -404,7 +446,6 @@ ffmpeg -framerate 30 -i frame_%06d.bmp -c:v libx264 -crf 16 -pix_fmt yuv420p dls
 | --- | --- | --- |
 | color 解码 | 读 `frame.json` → 按 `color_format` 解码 `color.bin` → 出 PNG（HDR 时 tone map） | 肉眼画面正常、无错位/偏色 |
 | motion | 解码 `motion.bin` → 画色轮/箭头图 | 方向与相机运动一致、尺度合理 |
-| depth | 统计 min/max/直方图 | 范围合理（近处小/远处大，或反之，看 `depth_inverted`） |
 | 完整性 | 数 `frame_*/` 目录数 vs `manifest.json` 的 `captured_frames` | 相等 |
 
 仓库 `tools/verify_capture.py` 已实现离线校验（**纯 CPU，Ubuntu 直接跑，无需 GPU/游戏**）：
@@ -431,9 +472,12 @@ python3 tools/verify_capture.py "D:\cap\session_20261005_213000"   # 路径在 W
 | 输出视频高光炸白 | HDR 源未 tone map | host 默认已 tone map；确认没误加 `--no-tone-map`，或加 `--no-tone-map` 对比找原因 |
 | 输出拖影 | motion 方向反了 | 加 `--flip-motion` |
 | 输出抖动/时间不稳 | motion scale 或分辨率没处理 | 检查 `motion_scale_x/y` 与 `motion_resolution`（见 §2.3） |
-| 输出整体发灰/无 NR 痕迹 | depth 是常量平面（CaptureDepth=false） | 重采时开 `CaptureDepth=true`（见 §0.2 / §2.2 第 3 步） |
+| 输出整体发灰/无 NR 痕迹 | host 喂的是常量深度平面（depth 采集已移除，属预期行为） | 官方 NR 模型不消费 depth，此为设计。先查 color/motion 是否正常 |
 | 离线 host 报 `feature 18` 没创建 | 离线目录缺 OptiScaler / renodx-dlss5 add-on | 与 `--test` 同环境（见 §0.1 / §2.1） |
-| 旧 host 读新会话报 `has no usable color.bin` | `Compact=true` 改了落盘格式（4 B/px），旧 host 按 8 B/px 读 | 用配套的新 host；或把 ini 的 `Compact=false` 关掉重采 |
+| 旧 host 读新会话报错 / 花屏 | `capture_version=3` 把 color 落盘改成 8-bit RGB（3 B/px），旧 host 按 4/8 B/px 读 | 用配套的新 host；或把 ini 的 `Compact=false` 关掉重采 |
+| 合成视频没有声音 | 捕获层没录音 / ffmpeg 没带音频输入 | 确认 `[Capture] CaptureAudio=true`；ffmpeg 加 `-i audio.wav -c:a aac -b:a 192k -shortest` |
+| manifest 里没有 `audio_*` 字段 | WASAPI 初始化失败或混音格式不支持 | 看 `OptiScaler.log` 里的 `[Capture] audio:` 行 |
+| `dropped_frames` 很大、实际帧率远低于 `游戏帧率 ÷ FrameStride` | 写盘吞吐跟不上，6 槽环形缓冲占满 → 丢帧（**不阻塞游戏**，游戏帧率不受影响） | 把 `[Capture] OutputDir` 指到更快的 SSD；把该目录排除杀软实时扫描；或增大 `FrameStride` 降低数据率 |
 | 日志 `device adapter: Intel(R) UHD Graphics … (DXGI's default adapter)` + `NGX unavailable` | hybrid 笔记本上 DXGI 默认适配器是核显，NGX 是 NVIDIA 专用运行时 | 已修复：host 现在优先选 NVIDIA 适配器（`PickNgxAdapter`）。旧版可在 Windows 设置→显示→图形里给 exe 指定"高性能"，或 NVIDIA 控制面板指定独显 |
 | 装脚本报 `dxgi.dll 已存在，且不是 OptiScaler` | 代理名被 ReShade 等占用 | 换 `-Proxy winmm`；确认要顶掉才加 `-Force` |
 | 装脚本报 `已存在安装记录` | 上次没卸载 | 先 `uninstall.bat`，或 `-Force`（会丢弃旧备份） |
@@ -453,13 +497,13 @@ python3 tools/verify_capture.py "D:\cap\session_20261005_213000"   # 路径在 W
 查状态:  tools\status.bat [游戏目录]
         （等价手工：解压到 bin\x64\ + 跑 setup_windows.bat 选 dxgi.dll；
           CET mod → plugins\cyber_engine_tweaks\mods\optiscaler_capture\init.lua）
-改 ini:  [Capture] Enabled=true, FrameStride=2, CaptureColor/Motion=true, Compact=true
+改 ini:  [Capture] Enabled=true, FrameStride=2, CaptureColor/Motion=true, Compact=true, CaptureAudio=true
          [Hotfix] ColorResourceBarrier=64, MotionVectorResourceBarrier=64
-游戏内:  Page Up 开始/结束（屏幕顶端绿框显示 秒数/状态/体积；单次上限 5min 或 50GiB）
+游戏内:  Page Up 开始/结束（屏幕顶端绿框显示 秒数/状态/体积；单次上限 100GiB，时间不限）
          （或热键 OptiCaptureToggle；手写 command.txt 写 START / STOP；CET 控制台无自定义命令）
 输出:    bin\x64\plugins\cyber_engine_tweaks\mods\optiscaler_capture\session_[时间戳]\
 离线:    dlss5-feed-host64.exe --capture [session] --out [out] --fps 30
          （同 --test 环境：ReShade(dxgi.dll)+renodx-dlss5 add-on+OptiScaler）
-合成:    ffmpeg -framerate 30 -i frame_%06d.bmp -c:v libx264 -crf 16 -pix_fmt yuv420p dlss5_out.mp4
+合成:    ffmpeg -framerate 30 -i frame_%06d.png -i audio.wav -c:v libx264 -crf 16 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest dlss5_out.mp4
 校验:    python3 tools/verify_capture.py [session]
 ```

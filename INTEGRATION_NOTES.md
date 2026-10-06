@@ -219,10 +219,16 @@ if (InParameters->Get(NVSDK_NGX_Parameter_MotionVectors, &paramVelocity) != NVSD
 | **Frame timing** | `"FrameTimeDeltaInMsec"` | float，**毫秒** | ❌ 协议里没有字段 | 写进 `frame.json`（注意转秒：`delta_time = ms / 1000.0`） |
 
 > **落盘格式（捕获层 `[Capture] Compact`，默认 true）**：写盘时会压缩已知源格式以省空间——
-> color `R16G16B16A16_FLOAT` → `R11G11B10_FLOAT`，motion `R16G16B16A16_FLOAT` → `R16G16_FLOAT`（只留 RG，无损）。
-> 该契约由 `manifest.json` 的 **`capture_version=2`** 标识（=1 是压缩前的旧行为）。
+> color `R16G16B16A16_FLOAT` → **`R8G8B8_UNORM`（3 B/px，Reinhard+gamma 已在采集端烘焙）**，
+> motion `R16G16B16A16_FLOAT` → `R16G16_FLOAT`（只留 RG，无损）。
+> 该契约由 `manifest.json` 的 **`capture_version=3`** 标识（=2 是旧的 `R11G11B10` 契约，=1 是压缩前）。
 > 因此 `frame.json` 的 `color_format`/`motion_format` 是**落盘**格式，源格式另记在 `color_source_format`/`motion_source_format`。
 > 转换器**一律以 `color_format`/`motion_format` 为准**，不要假设 RGBA16F。关掉压缩用 `Compact=false`。
+>
+> **音频**：`[Capture] CaptureAudio=true`（默认）时，捕获层用 **WASAPI 环回**把系统/游戏声录成
+> `session_<时间戳>/audio.wav`（与帧序列共用同一会话起止，**无需手动对齐**）。落盘格式取设备混音格式
+> 原样写入（常见 float32 / PCM16 / PCM32），`manifest.json` 记 `audio_format` / `audio_sample_rate` /
+> `audio_channels` / `audio_frames`。合成时把它和帧一起喂给 ffmpeg 即可。
 
 ### 3.1 ⚠️ 最重要的结论：ComfyUI worker 只吃 Color + Motion
 
@@ -339,7 +345,7 @@ device->GetCopyableFootprints(&desc, 0, 1, 0, &footprint, &numRows, &rowSize, &t
 | 1 | `OptiScaler/inputs/NVNGX_DLSS_Dx12.cpp` `TryEvaluateOptiFeature()`，`feature->Evaluate` 之后 | 插入 `Capture::OnFrame(InCmdList, InParameters, feature)` 调用（默认空实现/关闭） |
 | 2 | 新增 `OptiScaler/inputs/DlssCapture/DlssCapture.{h,cpp}` | 捕获模块：命令轮询线程、readback 环、fence 同步、写盘线程、manifest/frame.json |
 | 3 | `OptiScaler/OptiScaler.vcxproj` + `.filters` | 注册新增文件 |
-| 4 | `OptiScaler/OptiScaler.ini` + `Config.h/.cpp` | 新增 `[Capture]` 段：`Enabled`(默认 false)、`OutputDir`、`CaptureDepth`、`FrameStride`、`MaxFrames` |
+| 4 | `OptiScaler/OptiScaler.ini` + `Config.h/.cpp` | 新增 `[Capture]` 段：`Enabled`(默认 false)、`OutputDir`、`FrameStride`、`MaxFrames`（`CaptureDepth` / `CaptureExposure` 曾一并加入，后确认模型不消费、已移除） |
 | 5 | CET mod `optiscaler_capture/init.lua` | 按 Prompt 5.2 的命令脚本（START/STOP/STATUS） |
 | 6 | `.github/workflows/build-capture.yml` | 基于 `just_build_no_signature.yml`，产物 `x64\Release\a\OptiScaler.dll` |
 | 7 | `tools/capture_to_comfy.py` | 转换器：color→RGBA8（含 tone map）、motion→FP16（含 scale/方向/分辨率处理）、场景切换 reset、输出 `frame_%06d_rgba.bin` + `frame_%06d_mv.bin` + `meta.json` |

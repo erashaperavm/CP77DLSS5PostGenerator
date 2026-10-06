@@ -1,0 +1,2 @@
+dlss5-feed-host64.exe --capture "D:\cap\session_20261005_213000" --out "D:\out\dlss5"
+ffmpeg -f concat -safe 0 -i frames.txt -i audio.wav -c:v libx264 -crf 16 -pix_fmt yuv420p -c:a aac -b:a 192k -shortest dlss5_out.mp4
