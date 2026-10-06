@@ -186,6 +186,8 @@ tools\status.bat "D:\Steam\steamapps\common\Cyberpunk 2077"
 > ⚠️ **维护提示（别改坏编码）**：`tools\*.bat` 必须保持 **纯 ASCII + CRLF**，`opti-capture-install.ps1` 必须保持 **UTF-8 with BOM + CRLF**。
 > 中文 Windows 的 cmd 用 **GBK(936)** 读 `.bat`，若 `.bat` 里混入 UTF-8 中文，会串行（行尾多字节序列吃掉下一行首字符，报 `'nstall.bat' 不是内部或外部命令` 之类）。
 > 而 PowerShell 5.1 读**无 BOM** 的 `.ps1` 会按 ANSI 解码，中文输出变乱码——所以 ps1 需要 BOM。
+>
+> ⚠️ **CET mod 的 Lua 是 5.2**（其全局白名单含 `bit32` 可为证）：`cet-mod/optiscaler_capture/init.lua` **不要用** 5.3+ 的位运算符（`|` `&` `~` `<<` `>>`）或整除 `//`——在 5.2 里是**语法错误，会导致整个 mod 加载失败**（CET 报 `Mod xxx failed to load!`）。组合 ImGui flag 用 `bit32.bor` 或加法（各 flag 互不重叠）。
 
 ---
 
@@ -205,7 +207,7 @@ tools\status.bat "D:\Steam\steamapps\common\Cyberpunk 2077"
 **0. 屏幕 HUD + Page Up（默认，最省事）**
 
 mod 用 CET 的 ImGui 在**屏幕中轴线顶端（距顶 60 px）**常驻一个鲜绿色小方块，黑字显示：
-`状态（捕获中 / 捕获结束 / 待命）`、`已捕获秒数`、`帧数 · 体积`，触顶时显示原因。
+`状态（捕获中 / 捕获结束 / 待命）`、`已捕获秒数`、`帧率 · 帧数 · 体积`，触顶时显示原因。
 
 - **Page Up**：开始 / 结束采集（在 `onDraw` 里用 `ImGui.IsKeyPressed(ImGuiKey.PageUp)` 检测；
   若你已在 Bindings 页把 `OptiCaptureToggle` 绑了键，则改由绑定回调触发，不会双触发）。
@@ -259,6 +261,8 @@ OptiScaler 侧只是**轮询 `command.txt`**。直接在
 ```
 
 > 注：`OptiScaler.ini` 的注释里写成 `...\optiscaler_capture\capture\session_...\`，**多了一层 `capture\`**。以源码为准（`DlssCapture.cpp` 的 `EnsureStarted()`）：**没有 `capture\` 这一层**。实际目录以 `OptiCaptureStatus` 打印的"输出目录"为准。
+
+> ⚠️ **CET 沙箱路径规则（易踩）**：CET 的 Lua `io` 把相对路径解析到**本 mod 自己的目录**，且**只允许访问该目录树**（绝对路径与 `..\` 逃逸一律拒绝）。所以 mod 里读写 `command.txt`/`status.json` 必须用**短文件名**，不能写 `plugins/cyber_engine_tweaks/mods/...`——那样会被解析成 mod 目录下的嵌套子路径（不存在），`io.open` 返回 nil，报"无法写入 command.txt"。
 
 ### 1.3 捕获输出布局
 
